@@ -5,6 +5,11 @@ greatestProfitIncrease = 0
 greatestProfitIncreaseMonth = ""
 greatestProfitDecrease = 0
 greatestProfitDecreaseMonth = ""
+netTotal = 0
+lastMonthCost = 0
+averageChange = 0
+
+lines = []
 
 csvpath = os.path.join('Resources', 'budget_data.csv')
 writepath = os.path.join('analysis', 'financial_analysis.txt')
@@ -29,9 +34,6 @@ with open(csvpath) as csvfile:
     months = []
     amounts = []
 
-    netTotal = 0
-    lastMonthCost = 0
-
     for row in csv_reader:
         cost = int(row[1])
         month = row[0]
@@ -52,11 +54,22 @@ with open(csvpath) as csvfile:
         lastMonthCost = cost
 
     totalMonths = len(months)
+    averageChange = findAverageChange(months, amounts)
 
-    print("Financial Analysis\n")
-    print("-----------------------------\n")
-    print(f"Total Months: {totalMonths}")
-    print(f"Total: ${netTotal}")
-    print(f"Average change: ${findAverageChange(months, amounts)}")
-    print(f"Greatest Increase in Profits: {greatestProfitIncreaseMonth} (${greatestProfitIncrease})")
-    print(f"Greatest Decrease in Profits: {greatestProfitDecreaseMonth} (${greatestProfitDecrease})")
+    lines = [
+        'Financial Analysis',
+        '-----------------------\n',
+        f'Total Months: {totalMonths}',
+        f'Total: ${netTotal}',
+        f'Average change: ${averageChange}',
+        f'Greatest Increase in Profits: {greatestProfitIncreaseMonth} (${greatestProfitIncrease})',
+        f'Greatest Decrease in Profits: {greatestProfitDecreaseMonth} (${greatestProfitDecrease})'
+    ]
+
+    for line in lines:
+        print(line)
+
+with open(writepath, 'w') as writefile:
+    for line in lines:
+        writefile.write(line + "\n")
+    # writefile.writelines(lines)
